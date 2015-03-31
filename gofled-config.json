@@ -1,0 +1,19 @@
+{
+	"outputMode": "apa102",
+	"outputMapping": "rgb-123-v2-gofled",
+	"demoMode": "id",
+	"ledsPerStrip": 104,
+	"usedStripCount": 17,
+	"colorChannelOrder": "RGB",
+	"opcTcpPort": 7890,
+	"opcUdpPort": 7890,
+	"enableInterpolation": false,
+	"enableDithering": false,
+	"enableLookupTable": false,
+	"lumCurvePower": 2.0000,
+	"whitePoint": {
+		"red": 0.9000,
+		"green": 1.0000,
+		"blue": 1.0000
+	}
+}
