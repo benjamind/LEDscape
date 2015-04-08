@@ -106,30 +106,51 @@ l_start_frame:
 
 
 l_word_loop:
-	// first 8 bits will be 0xFF (global brightness always at maximum)
+	// first 3 bits must always be 1
+	// remaining 5 bits define global brightness
+
+	// for max brightness set r30 to 0xFF (global brightness always at maximum)
+
+	// gofled is too bright, set brightness to 10 (0xEA)
+	MOV r30, 0xEA
 	MOV r_bit_num, 8
 
 	RESET_GPIO_ONES()
-
 	l_header_bit_loop:
 		DECREMENT r_bit_num
-
-		// Clocks HIGH
-		PREP_GPIO_ADDRS_FOR_SET()
-		PREP_GPIO_MASK_NAMED(odd)
-		GPIO_APPLY_MASK_TO_ADDR()
 		
-		// lower clock and raise data
-		PREP_GPIO_ADDRS_FOR_SET()
-		PREP_GPIO_MASK_NAMED(even)
-		GPIO_APPLY_MASK_TO_ADDR()
+		brightness_clock_high:
+			// first set clocks high
+			// Clocks HIGH
+	                PREP_GPIO_ADDRS_FOR_SET()
+	                PREP_GPIO_MASK_NAMED(odd)
+	                GPIO_APPLY_MASK_TO_ADDR()
 
-		PREP_GPIO_ADDRS_FOR_CLEAR()
-		PREP_GPIO_MASK_NAMED(odd)
-		GPIO_APPLY_MASK_TO_ADDR()
-		
-		QBNE l_header_bit_loop, r_bit_num, #0
+		// test if this bit in the r30 is clear
+		QBBC brightness_bit_low, r30, r_bit_num
 
+		brightness_bit_high:
+			// its not clear, so set data HIGH
+	                PREP_GPIO_ADDRS_FOR_SET()
+	                PREP_GPIO_MASK_NAMED(even)
+	                GPIO_APPLY_MASK_TO_ADDR()
+	
+			// skip brightness_skip
+			JMP brightness_clock_low
+
+		brightness_bit_low:
+			// set all data LOW
+	                PREP_GPIO_ADDRS_FOR_CLEAR()
+	                PREP_GPIO_MASK_NAMED(even)
+	                GPIO_APPLY_MASK_TO_ADDR()
+
+		brightness_clock_low:
+			// Clocks LOW
+			PREP_GPIO_ADDRS_FOR_CLEAR()
+			PREP_GPIO_MASK_NAMED(odd)
+			GPIO_APPLY_MASK_TO_ADDR()
+
+		QBNE l_header_bit_loop, r_bit_num, 0
 
 	// for bit in 24 to 0
 	MOV r_bit_num, 24
