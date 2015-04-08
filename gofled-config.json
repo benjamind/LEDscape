@@ -7,8 +7,8 @@
 	"colorChannelOrder": "RGB",
 	"opcTcpPort": 7890,
 	"opcUdpPort": 7890,
-	"enableInterpolation": true,
-	"enableDithering": true,
+	"enableInterpolation": false,
+	"enableDithering": false,
 	"enableLookupTable": true,
 	"lumCurvePower": 2.0000,
 	"whitePoint": {
